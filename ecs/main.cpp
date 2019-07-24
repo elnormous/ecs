@@ -37,12 +37,12 @@ template<typename HeadItem, typename... TailItems> struct Entity<HeadItem, TailI
     {
         std::cout << "Entity<HeadItem, TailItems...>\n";
     }
-};
 
-template<typename HeadItem, typename... TailItems> HeadItem& get(Entity<HeadItem, TailItems...>& entity)
-{
-    return entity.ComponentHolder<HeadItem>::value;
-}
+    template<typename Component> Component& get()
+    {
+        return ComponentHolder<Component>::value;
+    }
+};
 
 class Position
 {
@@ -68,8 +68,9 @@ int main(int argc, const char * argv[])
 {
     Entity<Position, Controller, Sound> entity;
 
-    auto c = get<Controller>(entity);
+    auto& c = entity.get<Controller>();
+    auto& p = entity.get<Position>();
 
-    std::cout << c.x << "\n";
+    std::cout << c.x << " " << p.position[0] << "\n";
     return 0;
 }
