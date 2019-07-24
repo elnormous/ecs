@@ -9,52 +9,39 @@
 #include <iostream>
 #include <vector>
 
-template <class ...Types>
-class Entity
+template<typename Item> struct ComponentHolder
 {
-public:
-};
-
-template<typename Item> struct SystemLeaf
-{
-    SystemLeaf()
+    ComponentHolder()
     {
-        std::cout << "SystemLeaf<Item>\n";
+        std::cout << "ComponentHolder<Item>\n";
     }
 
     Item value;
 };
 
-template<typename... Items> struct System;
+template<typename... Items> struct Entity;
 
-template<> struct System<>
+template<> struct Entity<>
 {
-    System()
+    Entity()
     {
-        std::cout << "System<>\n";
+        std::cout << "Entity<>\n";
     }
 };
 
-template<typename HeadItem, typename... TailItems> struct System<HeadItem, TailItems...>:
-    public SystemLeaf<HeadItem>,
-    public System<TailItems...>
+template<typename HeadItem, typename... TailItems> struct Entity<HeadItem, TailItems...>:
+    public ComponentHolder<HeadItem>,
+    public Entity<TailItems...>
 {
-    System()
+    Entity()
     {
-        std::cout << "System<HeadItem, TailItems...>\n";
+        std::cout << "Entity<HeadItem, TailItems...>\n";
     }
-
-    void addComponent(const HeadItem& component)
-    {
-        components.push_back(component);
-    }
-
-    std::vector<HeadItem> components;
 };
 
-template<typename HeadItem, typename... TailItems> HeadItem& get(System<HeadItem, TailItems...>& tuple)
+template<typename HeadItem, typename... TailItems> HeadItem& get(Entity<HeadItem, TailItems...>& entity)
 {
-    return tuple.SystemLeaf<HeadItem>::value;
+    return entity.ComponentHolder<HeadItem>::value;
 }
 
 class Position
@@ -79,9 +66,9 @@ public:
 
 int main(int argc, const char * argv[])
 {
-    System<Position, Controller, Sound> system;
+    Entity<Position, Controller, Sound> entity;
 
-    auto c = get<Controller>(system);
+    auto c = get<Controller>(entity);
 
     std::cout << c.x << "\n";
     return 0;
