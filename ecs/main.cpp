@@ -9,8 +9,14 @@
 #include <iostream>
 #include <vector>
 
-template<typename Item> struct ComponentHolder
+template<typename... Items> class System
 {
+public:
+};
+
+template<typename Item> class ComponentHolder
+{
+public:
     ComponentHolder()
     {
         std::cout << "ComponentHolder<Item>\n";
@@ -19,20 +25,22 @@ template<typename Item> struct ComponentHolder
     Item value;
 };
 
-template<typename... Items> struct Entity;
+template<typename... Items> class Entity;
 
 template<> struct Entity<>
 {
+public:
     Entity()
     {
         std::cout << "Entity<>\n";
     }
 };
 
-template<typename HeadItem, typename... TailItems> struct Entity<HeadItem, TailItems...>:
+template<typename HeadItem, typename... TailItems> class Entity<HeadItem, TailItems...>:
     public ComponentHolder<HeadItem>,
     public Entity<TailItems...>
 {
+public:
     Entity()
     {
         std::cout << "Entity<HeadItem, TailItems...>\n";
@@ -44,13 +52,13 @@ template<typename HeadItem, typename... TailItems> struct Entity<HeadItem, TailI
     }
 };
 
-class Position
+class Position final
 {
 public:
     float position[4] = {1.0F, 2.0F, 3.0F , 1.0F};
 };
 
-class Controller
+class Controller final
 {
 public:
     void update();
@@ -58,7 +66,7 @@ public:
     float x = 3.0F;
 };
 
-class Sound
+class Sound final
 {
 public:
     void update();
@@ -66,7 +74,9 @@ public:
 
 int main(int argc, const char * argv[])
 {
-    Entity<Position, Controller, Sound> entity;
+    System<Position, Controller, Sound> system;
+
+    Entity<Position, Controller> entity;
 
     auto& c = entity.get<Controller>();
     auto& p = entity.get<Position>();
