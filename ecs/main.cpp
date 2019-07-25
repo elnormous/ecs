@@ -27,15 +27,6 @@ public:
 
 template<typename... Items> class Entity;
 
-template<> struct Entity<>
-{
-public:
-    Entity()
-    {
-        std::cout << "Entity<>\n";
-    }
-};
-
 template<typename HeadItem, typename... TailItems> class Entity<HeadItem, TailItems...>:
     public ComponentHolder<HeadItem>,
     public Entity<TailItems...>
@@ -49,6 +40,15 @@ public:
     template<typename Component> Component& get()
     {
         return ComponentHolder<Component>::value;
+    }
+};
+
+template<> class Entity<>
+{
+public:
+    Entity()
+    {
+        std::cout << "Entity<>\n";
     }
 };
 
