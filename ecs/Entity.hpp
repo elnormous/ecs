@@ -1,47 +1,22 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-inline namespace detail
-{
-    template<typename Item> class EntityComponentHolder // TODO: hold component ids
-    {
-    public:
-        EntityComponentHolder():
-            componentId(0) // TODO: create component in world
-        {
-            std::cout << "EntityComponentHolder<Item>\n";
-        }
+#include <unordered_map>
 
-        uintptr_t componentId;
-    };
-}
-
-template<typename... Items> class Entity;
-
-template<typename HeadItem, typename... TailItems>
-class Entity<HeadItem, TailItems...>:
-    public EntityComponentHolder<HeadItem>,
-    public Entity<TailItems...>
+class Entity final
 {
 public:
     Entity()
     {
-        std::cout << "Entity<HeadItem, TailItems...>\n";
+        std::cout << "Entity\n";
     }
 
-    /*template<typename Component> Component& get()
+    template <class T>
+    void addComponent()
     {
-        return EntityComponentHolder<Component>::value;
-    }*/
-};
-
-template<> class Entity<>
-{
-public:
-    Entity()
-    {
-        std::cout << "Entity<>\n";
     }
+
+    std::unordered_map<uintptr_t, uintptr_t> components;
 };
 
 #endif // ENTITY_HPP

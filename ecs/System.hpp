@@ -1,45 +1,20 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
-inline namespace detail
-{
-    template<typename Item> class SystemComponentHolder // TODO: hold component types
-    {
-    public:
-        SystemComponentHolder()
-        {
-            std::cout << "SystemComponentHolder<Item>\n";
-        }
+#include <tuple>
 
-        Item value;
-    };
-}
-
-template<typename... Items> class System;
-
-template<typename HeadItem, typename... TailItems>
-class System<HeadItem, TailItems...>:
-    public SystemComponentHolder<HeadItem>,
-    public System<TailItems...>
+template<class... Components>
+class System
 {
 public:
     System()
     {
-        std::cout << "System<HeadItem, TailItems...>\n";
+        std::cout << "System\n";
     }
 
-    template <typename Component> Component& get()
+    void update(const std::tuple<Components&...>& components)
     {
-        return SystemComponentHolder<Component>::value;
-    }
-};
 
-template<> class System<>
-{
-public:
-    System()
-    {
-        std::cout << "System<>\n";
     }
 };
 

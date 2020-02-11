@@ -77,22 +77,15 @@ public:
 
 int main(int argc, const char * argv[])
 {
-    /*System<Position, Controller, Sound> system;
-
-    Entity<Position, Controller> entity;
-
-    auto& c = entity.get<Controller>();
-    auto& p = entity.get<Position>();
-
-    std::cout << c.x << " " << p.position[0] << "\n";*/
-
     World<Position, Mesh> world;
 
     world.create<Position>();
 
     world.tick();
 
-    Entity<Position, Mesh> entity;
+    Entity entity;
+    entity.addComponent<Position>();
+    entity.addComponent<Mesh>();
 
     return 0;
 }
