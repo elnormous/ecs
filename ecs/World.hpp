@@ -18,9 +18,9 @@ inline namespace detail
 
         uintptr_t create()
         {
-            components.resize(lastId);
+            components.resize(lastComponentId);
 
-            return ++lastId;
+            return ++lastComponentId;
         }
 
         void destroy(uintptr_t id)
@@ -30,7 +30,7 @@ inline namespace detail
 
         std::vector<Component> components;
         // TODO: free list
-        uintptr_t lastId = 0;
+        uintptr_t lastComponentId = 0;
     };
 }
 
@@ -53,14 +53,16 @@ public:
         //World<TailComponents...>::tick();
     }
 
-    template<class Component> Component& get()
-    {
-        return WorldComponentHolder<Component>::value;
-    }
-
-    template<class Component> uintptr_t create()
+    template<class Component> uintptr_t createComponent(Entity& entity)
     {
         return WorldComponentHolder<Component>::create();
+    }
+
+    template <class... Components>
+    std::tuple<Components&...> getComponents()
+    {
+        std::tuple<Components&...> result;
+        return result;
     }
 };
 
@@ -72,19 +74,16 @@ public:
         std::cout << "World<>\n";
     }
 
-    template <class... Components>
-    std::tuple<Components&...> getComponents()
+    template<class Component> uintptr_t createEntity()
     {
-        std::tuple<Components&...> result;
-        return result;
+        entities.resize(lastEntityId);
+
+        return ++lastEntityId;
     }
 
-    void tick()
-    {
-
-    }
-
-    std::unordered_map<uintptr_t, Entity> entities;
+    std::vector<Entity> entities;
+    // TODO: free list
+    uintptr_t lastEntityId = 0;
 };
 
 #endif // WORLD_HPP

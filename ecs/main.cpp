@@ -60,6 +60,7 @@ public:
     {
         std::cout << "GravitySystem::tick\n";
 
+        // this is wrong of course
         std::get<Position&>(components).y -= gravity;
     }
 
@@ -69,7 +70,7 @@ public:
 class RenderSystem: public System<Position, Mesh>
 {
 public:
-    void update(std::tuple<Position&, Mesh&>& components)
+    void update(const std::tuple<Position&, Mesh&>& components)
     {
         std::cout << "RenderSystem::tick\n";
 
@@ -78,6 +79,11 @@ public:
 
         std::cout << "Rendering " << mesh.meshId << " at " << position.x << "," << position.y << "," << position.z << "\n";
     }
+};
+
+class Actor
+{
+    uintptr_t entityId;
 };
 
 int main(int argc, const char * argv[])
