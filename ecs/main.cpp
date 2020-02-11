@@ -56,10 +56,11 @@ struct Mesh: Component
 class GravitySystem: public System<Position>
 {
 public:
-    void tick()
+    void update(std::tuple<Position&>& components)
     {
         std::cout << "GravitySystem::tick\n";
-        // TODO: go through every position component and reduce y position
+
+        std::get<Position&>(components).y -= gravity;
     }
 
     float gravity = 9.8f;
@@ -68,10 +69,14 @@ public:
 class RenderSystem: public System<Position, Mesh>
 {
 public:
-    void tick()
+    void update(std::tuple<Position&, Mesh&>& components)
     {
         std::cout << "RenderSystem::tick\n";
-        // TODO: go through all position, mesh pairs and render them
+
+        auto mesh = std::get<Mesh&>(components);
+        auto position = std::get<Position&>(components);
+
+        std::cout << "Rendering " << mesh.meshId << " at " << position.x << "," << position.y << "," << position.z << "\n";
     }
 };
 
@@ -79,9 +84,10 @@ int main(int argc, const char * argv[])
 {
     World<Position, Mesh> world;
 
-    world.create<Position>();
-
-    world.tick();
+    //world.create<Position>();
+    world.update();
+    RenderSystem renderSystem;
+    renderSystem.System::update(world);
 
     Entity entity;
     entity.addComponent<Position>();

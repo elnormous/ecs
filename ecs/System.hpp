@@ -12,9 +12,10 @@ public:
         std::cout << "System\n";
     }
 
-    void update(const std::tuple<Components&...>& components)
+    template <class World>
+    void update(World& world)
     {
-
+        //update(world.template getComponents<Components...>());
     }
 };
 
