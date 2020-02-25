@@ -6,39 +6,11 @@
 #include <unordered_map>
 #include "System.hpp"
 
-inline namespace detail
-{
-    template<class Component> class WorldComponentHolder
-    {
-    public:
-        WorldComponentHolder()
-        {
-            std::cout << "WorldComponentHolder<Item>\n";
-        }
-
-        uintptr_t create()
-        {
-            components.resize(lastComponentId);
-
-            return ++lastComponentId;
-        }
-
-        void destroy(uintptr_t id)
-        {
-            // TODO: delete
-        }
-
-        std::vector<Component> components;
-        // TODO: free list
-        uintptr_t lastComponentId = 0;
-    };
-}
 
 template<class... Component> class World;
 
 template<class HeadComponent, class... TailComponents>
 class World<HeadComponent, TailComponents...>:
-    public WorldComponentHolder<HeadComponent>,
     public World<TailComponents...>
 {
 public:
@@ -55,7 +27,7 @@ public:
 
     template<class Component> uintptr_t createComponent(Entity& entity)
     {
-        return WorldComponentHolder<Component>::create();
+        return World<Component>::create();
     }
 
     template <class... Components>
@@ -64,6 +36,22 @@ public:
         std::tuple<Components&...> result;
         return result;
     }
+
+    uintptr_t create()
+    {
+        components.resize(lastComponentId);
+
+        return ++lastComponentId;
+    }
+
+    void destroy(uintptr_t id)
+    {
+        // TODO: delete
+    }
+
+    std::vector<HeadComponent> components;
+    // TODO: free list
+    uintptr_t lastComponentId = 0;
 };
 
 template<> class World<>
